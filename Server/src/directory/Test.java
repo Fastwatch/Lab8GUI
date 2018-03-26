@@ -1,7 +1,7 @@
 /**
  * Simple HTTP handler for testing ChronoTimer
  */
-package com.example;
+package directory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +12,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.HttpExchange;
@@ -21,13 +23,13 @@ import com.sun.net.httpserver.HttpServer;
 public class Test {
 
     // a shared area where we get the POST data and then use it in the other handler
-    static String sharedResponse = "";
     static boolean gotMessageFlag = false;
+    static MainDirectory md;
 
     public static void main(String[] args) throws Exception {
 
         // set up a simple HTTP server on our local host
-        HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(8001), 0);
 
         // create a context to get the request to display the results
         server.createContext("/displayresults", new DisplayHandler());
@@ -35,7 +37,7 @@ public class Test {
         // create a context to get the request for the POST
         server.createContext("/sendresults",new PostHandler());
         server.setExecutor(null); // creates a default executor
-
+        md = new MainDirectory();
         // get it going
         System.out.println("Starting Server...");
         server.start();
@@ -49,22 +51,14 @@ public class Test {
 			// set up the header
             System.out.println(response);
 			try {
-				if (!sharedResponse.isEmpty()) {
-					System.out.println(response);
-					ArrayList<Employee> fromJson = g.fromJson(sharedResponse,
-							new TypeToken<Collection<Employee>>() {
-							}.getType());
+				System.out.println(response);
+				ArrayList<Employee> fromJson = g.fromJson(md.toString(),
+						new TypeToken<Collection<Employee>>() {
+						}.getType());
 
-					System.out.println(response);
-					response += "Before sort\n";
-					for (Employee e : fromJson) {
-						response += e + "\n";
-					}
-					Collections.sort(fromJson);
-					response += "\nAfter sort\n";
-					for (Employee e : fromJson) {
-						response += e + "\n";
-					}
+				System.out.println(response);
+				for (Employee e : fromJson) {
+					response += e + "\n";
 				}
 			} catch (JsonSyntaxException e) {
 				e.printStackTrace();
@@ -82,9 +76,6 @@ public class Test {
     static class PostHandler implements HttpHandler {
         public void handle(HttpExchange transmission) throws IOException {
 
-            //  shared data that is used with other handlers
-            sharedResponse = "";
-
             // set up a stream to read the body of the request
             InputStream inputStr = transmission.getRequestBody();
 
@@ -101,17 +92,18 @@ public class Test {
                 nextChar=inputStr.read();
             }
 
-            // create our response String to use in other handler
-            sharedResponse = sharedResponse+sb.toString();
-
             // respond to the POST with ROGER
             String postResponse = "ROGER JSON RECEIVED";
-
-            System.out.println("response: " + sharedResponse);
-
-            //Desktop dt = Desktop.getDesktop();
-            //dt.open(new File("raceresults.html"));
-
+            
+            JsonObject j = new JsonParser().parse(sb.toString()).getAsJsonObject();
+            if(j.has("print")){
+            	md.print();
+            }else if (j.has("clr")){
+            	md.clr();
+            }else if (j.has("add")){
+            	md.add(j.get("add").toString());
+            }
+            
             // assume that stuff works all the time
             transmission.sendResponseHeaders(300, postResponse.length());
 
