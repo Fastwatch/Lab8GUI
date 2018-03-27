@@ -237,11 +237,8 @@ public class DirectoryEditor extends JFrame {
 		         if( command.equals( "EXIT" ))  {
 		        	 frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 		         } else if( command.equals( "SUBMIT" ) )  {
-		        	 // Submit button clicked
-		        	 // Upload functionality here
-		        	 // TODO
+		        	 saveEmployee(currentIndex);
 		        	 sendData();
-		        	 
 		         } 	
 		     }		
 		}
@@ -348,7 +345,6 @@ public class DirectoryEditor extends JFrame {
 	
 	private void sendData() {
 		String str = new Gson().toJson(emp, new TypeToken<List<Employee>>() {}.getType());
-		//TODO send str
 		DirectoryProxy d = new DirectoryProxy();
 		d.add(str);
 		emp.clear();
@@ -356,13 +352,4 @@ public class DirectoryEditor extends JFrame {
 		headerLabel.setText("Employee " + (currentIndex + 1));
 		clearFields();
 	}
-	
-	private static void addEmp(String line) {
-		String[] e = line.split(" ");
-		if(e.length == 4) {
-			Employee tmp = new Employee(e[1], e[0], e[3], e[2], line, line);
-			emp.add(tmp);
-		}
-	}
-	
 }
