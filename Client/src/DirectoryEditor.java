@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -181,9 +182,7 @@ public class DirectoryEditor extends JFrame {
 	    employeeTitlePanel.add(titleLabel);
 	    employeeTitlePanel.add(titleField);
 	    
-	    //employeeOptionPanel.add(employeeGenderPanel);
-	    //employeeOptionPanel.add(employeeTitlePanel);
-	    
+
 	    controlPanel = new JPanel();
 	    controlPanel.setLayout(new FlowLayout()); // Place buttons here: prev, exit, submit, next
 	    
@@ -241,6 +240,8 @@ public class DirectoryEditor extends JFrame {
 		        	 // Submit button clicked
 		        	 // Upload functionality here
 		        	 // TODO
+		        	 sendData();
+		        	 
 		         } 	
 		     }		
 		}
@@ -251,20 +252,17 @@ public class DirectoryEditor extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String command = e.getActionCommand();
 		         if( command.equals( "PREV" ))  {
-		            // load previous in list, disable if no previous
-		        	 if(currentIndex != 0) {
+		        	 if(currentIndex > 0) {
 		        		 saveEmployee(currentIndex);
 		        		 currentIndex--;
 		        		 headerLabel.setText("Employee " + (currentIndex + 1));
 		        		 loadEmployee(currentIndex);
 		        	 }
 		         } else if( command.equals( "NEXT" ) )  {
-		        	// load new (blank) or next in list
 		        	 if(!fnameField.getText().equals("")) {
 			        	saveEmployee(currentIndex);
 			        	currentIndex++;
 			        	headerLabel.setText("Employee " + (currentIndex + 1));
-			        	System.out.println(emp.size() -1);
 			        	if(currentIndex > emp.size() - 1)
 			        		clearFields();
 			        	else 
@@ -279,18 +277,15 @@ public class DirectoryEditor extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String command = e.getActionCommand();
 		         if(command.equals( "MALE" ))  {
-		            // male
 		        	 femaleButton.setSelected(false);
 		        	 otherButton.setSelected(false);
 		        	 gender = "Male";
 		        	 
 		         } else if(command.equals("FEMALE"))  {
-		            // female
 		        	 maleButton.setSelected(false);
 		        	 otherButton.setSelected(false);
 		        	 gender = "Female";
 		         } else if(command.equals("OTHER"))  {
-			            // other
 		        	 femaleButton.setSelected(false);
 		        	 maleButton.setSelected(false);
 		        	 gender = "Other";
@@ -299,7 +294,6 @@ public class DirectoryEditor extends JFrame {
 	   	}
 	   	
 	   	private void saveEmployee(int index) {
-	   		System.out.println("in: " + index);
 	   		Employee tmp = new Employee(fnameField.getText(), lnameField.getText(), departmentField.getText(), phoneField.getText(),
         	(String)titleField.getSelectedItem(), gender);
         	if(emp.size() < index +1) {
@@ -342,99 +336,24 @@ public class DirectoryEditor extends JFrame {
 			otherButton.setSelected(true);
 			femaleButton.setSelected(false);
        	 	maleButton.setSelected(false);
+       	 	gender = "Other";
 	   	}
 	   	
 	   
 	
 	
 	public static void main(String[] args) {
-		
 		DirectoryEditor de = new DirectoryEditor();
 	}
 	
-	private static void consoleInput(Scanner in) {
-		String input;
-		boolean consoleInput = true;
-		boolean canAdd = false;
-		
-		System.out.println("Type \"Exit\" at any time to end program");
-
-		
-		while(consoleInput) {
-
-			while ((input = in.nextLine()) != null) {
-
-				
-				if(input.equals("Exit")) {
-					consoleInput = false;
-					break;
-				}else if(input.equals("END")) {
-					canAdd = false;
-					sendData();
-				}else if(canAdd) {
-					if(input.split(" ").length == 4) {
-						addEmp(input);
-					} else {
-						System.out.println("Please enter employee while in Add mode, or type \"END\" to stop Add mode");
-					}
-				}else if(input.equals("ADD")) {
-					canAdd = true;
-				}else if(input.equals("CLR")) {
-					dirp.clr();
-				}else if(input.equals("PRINT")) {
-					dirp.print();
-					System.out.println();
-				}
-			}
-		}
-	}
-	
-	private static void fileInput(Scanner in) {
-		String fileName;
-		File file = null;
-		
-		
-		System.out.print("\nPlease enter a file path:");
-		fileName = in.nextLine();
-		
-		file = new File(fileName);
-		
-		if(!file.exists() || !file.isFile()) {
-			System.out.println("File does not exist");
-			return;
-		}
-		
-		try (BufferedReader br = new BufferedReader(new FileReader(fileName));){
-			
-			String line;
-			boolean canAdd = false;
-			
-			while ((line = br.readLine()) != null) {
-				if(line.equals("END")) {
-					canAdd = false;
-					sendData();
-				}else if(canAdd) {
-					addEmp(line);
-				}else if(line.equals("ADD")) {
-					canAdd = true;
-				}else if(line.equals("CLR")) {
-					dirp.clr();
-				}else if(line.equals("PRINT")) {
-					dirp.print();
-					System.out.println();
-				}
-				
-			}
-		} catch (IOException ex) {
-			System.out.println("error occured in retrieving file");
-		}				
-		
-	}
-	
-	private static void sendData() {
-		Gson g = new Gson();
-		dirp.add(g.toJson(emp));
+	private void sendData() {
+		String str = new Gson().toJson(emp, new TypeToken<List<Employee>>() {}.getType());
+		//TODO send str
+		Client.serverCall(str);
 		emp.clear();
+		currentIndex = 0;
+		headerLabel.setText("Employee " + (currentIndex + 1));
+		clearFields();
 	}
 	
 	private static void addEmp(String line) {
