@@ -349,7 +349,8 @@ public class DirectoryEditor extends JFrame {
 	private void sendData() {
 		String str = new Gson().toJson(emp, new TypeToken<List<Employee>>() {}.getType());
 		//TODO send str
-		Client.serverCall(str);
+		DirectoryProxy d = new DirectoryProxy();
+		d.add(str);
 		emp.clear();
 		currentIndex = 0;
 		headerLabel.setText("Employee " + (currentIndex + 1));
