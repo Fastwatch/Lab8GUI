@@ -1,12 +1,41 @@
 
 public class Employee implements Comparable<Object>{
-	
+
 	private String firstName;
 	private String lastName;
 	private String department;
 	private String phoneNumber;
 	private String title;
 	private String gender;
+	
+	public String getFirstName() {
+		return firstName;
+	}
+
+
+	public String getLastName() {
+		return lastName;
+	}
+
+
+	public String getDepartment() {
+		return department;
+	}
+
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+
+	public String getTitle() {
+		return title;
+	}
+
+
+	public String getGender() {
+		return gender;
+	}
 	
 	public Employee(String firstName, String lastName, String department, String phoneNum, String title, String gender) {
 		this.firstName = firstName;

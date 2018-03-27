@@ -32,6 +32,8 @@ public class DirectoryEditor extends JFrame {
 	private static DirectoryProxy dirp = new DirectoryProxy();
 	private static List<Employee> emp = new ArrayList<Employee>();
 	
+	private int textSize = 20;
+	
 	private int currentIndex = 0;
 	private String fname;
 	private String lname;
@@ -48,13 +50,14 @@ public class DirectoryEditor extends JFrame {
     private JPanel controlPanel; // Controls for navigating through employees
     
     // Text for field labels
-    private String fnameText = "Employee First Name"; // Text
-    private String lnameText = "Employee Last Name"; // Text
-    private String departmentText = "Employee Department"; // Text
-    private String phoneText = "Employee Phone Number"; // Text
-    private String genderText = "Employee Gender"; // Radio button - Male, Female, Other - need default 
-    private String titleText = "Employee Title"; // List - Mr. Ms. Mrs. Dr. Col. Prof.
+    private String fnameText = "Employee First Name "; // Text
+    private String lnameText = "Employee Last Name "; // Text
+    private String departmentText = "Employee Department "; // Text
+    private String phoneText = "Employee Phone Number "; // Text
+    private String genderText = "Employee Gender "; // Radio button - Male, Female, Other - need default 
+    private String titleText = "Employee Title "; // List - Mr. Ms. Mrs. Dr. Col. Prof.
     
+    private JLabel headerLabel;
     private JLabel fnameLabel;
     private JLabel lnameLabel;
     private JLabel departmentLabel;
@@ -94,27 +97,30 @@ public class DirectoryEditor extends JFrame {
 	    Image icon = Toolkit.getDefaultToolkit().getImage("directory.png");
 	    frame.setIconImage(icon);
 	    
-	    frame.setLayout(new GridLayout(3, 1));
+	    frame.setLayout(new BorderLayout());
 	    
 	    // Set close operation and show window
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    
-	    Font f = new Font("Serif", Font.BOLD, 24);
+	    Font f = new Font("Serif", Font.BOLD, textSize);
+	    
+	    
+	    employeeOptionPanel = new JPanel();
+	    employeeOptionPanel.setLayout(new GridLayout(3, 1));
+	    employeeOptionPanel.setBorder(new TitledBorder("Employee Information"));
 	    
 	    employeeTextPanel = new JPanel();
 	    employeeTextPanel.setLayout(new GridLayout(4, 2));
-	    employeeTextPanel.setBorder(new TitledBorder("Employee Information"));
-	    
-	    employeeOptionPanel = new JPanel();
-	    employeeOptionPanel.setLayout(new GridLayout(2, 1));
 	    
 	    employeeGenderPanel = new JPanel();
 	    employeeGenderPanel.setLayout(new FlowLayout());
-	    employeeGenderPanel.setBorder(new TitledBorder("Employee Gender"));
 	    
 	    employeeTitlePanel = new JPanel();
 	    employeeTitlePanel.setLayout(new FlowLayout());
-	    employeeTitlePanel.setBorder(new TitledBorder("Employee Title"));
+	    
+	    // Header
+	    headerLabel = new JLabel("Employee", JLabel.CENTER);
+	    headerLabel.setFont(f);
 	    
 	    // Labels
 	    fnameLabel = new JLabel(fnameText, JLabel.RIGHT);
@@ -181,8 +187,8 @@ public class DirectoryEditor extends JFrame {
 	    employeeTitlePanel.add(titleLabel);
 	    employeeTitlePanel.add(titleField);
 	    
-	    employeeOptionPanel.add(employeeGenderPanel);
-	    employeeOptionPanel.add(employeeTitlePanel);
+	    //employeeOptionPanel.add(employeeGenderPanel);
+	    //employeeOptionPanel.add(employeeTitlePanel);
 	    
 	    controlPanel = new JPanel();
 	    controlPanel.setLayout(new FlowLayout()); // Place buttons here: prev, exit, submit, next
@@ -216,9 +222,13 @@ public class DirectoryEditor extends JFrame {
 	    controlPanel.add(exitButton);
 	    controlPanel.add(nextButton);
 	    
-	    frame.add(employeeTextPanel);
-	    frame.add(employeeOptionPanel);
-	    frame.add(controlPanel);
+	    employeeOptionPanel.add(employeeTextPanel);
+	    employeeOptionPanel.add(employeeGenderPanel);
+	    employeeOptionPanel.add(employeeTitlePanel);
+	    
+	    frame.add(headerLabel, BorderLayout.PAGE_START);
+	    frame.add(employeeOptionPanel, BorderLayout.CENTER);
+	    frame.add(controlPanel, BorderLayout.PAGE_END);
 	    
 	    // Make frame visible
 	    frame.setVisible(true);
@@ -236,6 +246,7 @@ public class DirectoryEditor extends JFrame {
 		         } else if( command.equals( "SUBMIT" ) )  {
 		        	 // Submit button clicked
 		        	 // Upload functionality here
+		        	 // TODO
 		         } 	
 		     }		
 		}
@@ -246,11 +257,10 @@ public class DirectoryEditor extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String command = e.getActionCommand();
 		         if( command.equals( "PREV" ))  {
-		            // Exit Button Clicked
 		            // load previous in list, disable if no previous
 		         } else if( command.equals( "NEXT" ) )  {
-		            // Submit button clicked
 		        	// load new (blank) or next in list
+		        	//fnameField.getText();
 		         }
 			}
 	   	}
