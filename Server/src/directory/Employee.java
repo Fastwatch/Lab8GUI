@@ -18,6 +18,31 @@ public class Employee implements Comparable<Object>{
 		this.gender = gender;
 	}
 	
+	public String getFirstName() {
+		return this.firstName;
+	}
+	
+	public String getLastName() {
+		return this.lastName;
+	}
+	
+	public String getDepartment() {
+		return this.department;
+	}
+	
+	public String getPhoneNumber() {
+		return this.phoneNumber;
+	}
+	
+	public String getTitle() {
+		return this.title;
+	}
+	
+	public String getGender() {
+		return this.gender;
+	}
+	
+	
 	@Override
 	public String toString() {
 		return title+ " " +firstName + " " + lastName + " in " + department + " has phone number of " + phoneNumber + " and is " + gender;
