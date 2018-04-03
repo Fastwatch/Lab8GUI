@@ -36,6 +36,13 @@ public class Test {
 
         // create a context to get the request for the POST
         server.createContext("/sendresults",new PostHandler());
+        
+     // create a context to get the request to display the results
+        server.createContext("/displayresults/directory", new DirectoryHandler());
+
+        // create a context to get the request for the POST
+        server.createContext("/displayresults/style.css",new StyleHandler());
+        
         server.setExecutor(null); // creates a default executor
         md = new MainDirectory();
         // get it going
@@ -70,6 +77,15 @@ public class Test {
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
+        }
+    }
+    static class DirectoryHandler implements HttpHandler {
+        public void handle(HttpExchange t) throws IOException {
+        }
+    }
+    static class StyleHandler implements HttpHandler {
+        public void handle(HttpExchange t) throws IOException {
+
         }
     }
 
