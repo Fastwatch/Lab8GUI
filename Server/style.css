@@ -1,0 +1,31 @@
+/*body {
+    background: url("background.gif") no-repeat;
+    background-size: 100%;
+}*/
+table{
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-collapse: collapse;
+    background-color: white;
+}
+tr, th, td {
+    text-align: left;
+    font-size: 18px;
+}
+th, td {
+    padding-right: 5px;
+    padding-left: 10px;
+}
+tr:nth-child(odd){
+    background-color: rgba(0, 0, 0, 0.2);
+}
+tr:first-child {
+    background-color: #8bc34a;
+    color: white;
+}
+
+tr:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+tr:first-child:hover{
+    background-color: #8bc34a;
+}
