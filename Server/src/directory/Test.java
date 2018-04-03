@@ -83,7 +83,64 @@ public class Test {
         }
     }
     static class DirectoryHandler implements HttpHandler {
-        public void handle(HttpExchange t) throws IOException {
+    	public void handle(HttpExchange t) throws IOException {
+    		//HTML file headers stuff
+    		String response = "<!DOCTYPE html>" + "\n";
+    		response += "<html lang=\"en-US\">" + "\n"; 
+    		response += "<head>" + "\n"; 
+    		response += "<title>Employees</title>" + "\n"; 
+    		response += "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" />" + "\n"; 
+    		response += "<body>" + "\n"; 
+            
+    		//Initialize HTML Table
+    		response += "<table>" + "\n";
+    		response += "<tr>" + "\n";
+    		response += "<th>Title</td>" + "\n";
+    		response += "<th>First Name</td>" + "\n";
+    		response += "<th>Last Name</td>" + "\n";
+    		response += "<th>Department</td>" + "\n";
+    		response += "<th>Phone</td>" + "\n";
+    		response += "<th>Gender</td>" + "\n";
+    		response += "</tr>" + "\n";
+    		
+			Gson g = new Gson();
+			// set up the header
+            System.out.println(response);
+			try {
+				System.out.println(response);
+				ArrayList<Employee> fromJson = g.fromJson(md.toString(),
+						new TypeToken<Collection<Employee>>() {
+						}.getType());
+
+				System.out.println(response);
+				for (Employee e : fromJson) {
+		    		response += "<tr>" + "\n";
+		    		response += "<td>" + e.getTitle() + "</td>" + "\n";
+		    		response += "<td>" + e.getFirstName() + "</td>" + "\n";
+		    		response += "<td>" + e.getLastName() + "</td>" + "\n";
+		    		response += "<td>" + e.getDepartment() + "</td>" + "\n";
+		    		response += "<td>" + e.getPhoneNumber() + "</td>" + "\n";
+		    		response += "<td>" + e.getGender() + "</td>" + "\n";
+		    		response += "</tr>" + "\n";
+
+				}
+			} catch (JsonSyntaxException e) {
+				e.printStackTrace();
+			}
+
+			//End the HTML doc and table
+    		response += "</table>" + "\n";
+    		response += "</body>" + "\n";
+    		response += "</html>" + "\n";
+	
+			
+            System.out.println(response);
+            // write out the response
+            t.sendResponseHeaders(200, response.length());
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        	
         }
     }
     static class StyleHandler implements HttpHandler {
