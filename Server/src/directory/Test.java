@@ -3,6 +3,7 @@
  */
 package directory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,12 +11,14 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Scanner;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -37,10 +40,10 @@ public class Test {
         // create a context to get the request for the POST
         server.createContext("/sendresults",new PostHandler());
         
-     // create a context to get the request to display the results
+     // create a context to get the request to display the Formatted results
         server.createContext("/displayresults/directory", new DirectoryHandler());
 
-        // create a context to get the request for the POST
+        // create a context to get the request for the Style Sheet
         server.createContext("/displayresults/style.css",new StyleHandler());
         
         server.setExecutor(null); // creates a default executor
@@ -85,7 +88,19 @@ public class Test {
     }
     static class StyleHandler implements HttpHandler {
         public void handle(HttpExchange t) throws IOException {
-
+        	File f = new File("style.css");
+        	Scanner sc = new Scanner(f);
+        	String response = "";
+        	while(sc.hasNextLine()){
+        		response+=sc.nextLine();
+        	}
+        	Headers h = t.getResponseHeaders();
+        	h.set("Content-Type", "text/css");
+        	t.sendResponseHeaders(200, 0);
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+            sc.close();
         }
     }
 
