@@ -1,0 +1,2 @@
+Philip Sauvey - Wrote code to serve css file to webpage
+Riley Mahr - Wrote style.css
