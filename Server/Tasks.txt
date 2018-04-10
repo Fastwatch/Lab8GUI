@@ -1,3 +1,4 @@
 Philip Sauvey - Wrote code to serve css file to webpage
 Riley Mahr - Wrote style.css
 Fue Her - Assisted on formatting Directory Handler
+Andrew Krill, Isaac Kadera - wrote code to serve html with Fue Her
